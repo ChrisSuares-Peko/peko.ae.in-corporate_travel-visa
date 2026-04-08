@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Sidebar from './components/Sidebar.jsx'
 import Topbar from './components/Topbar.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
+import PrototypePanel from './components/PrototypePanel.jsx'
 import CorporateTravel from './pages/CorporateTravel.jsx'
 import ManageApplications from './pages/ManageApplications.jsx'
 import VisaOptions from './pages/VisaOptions.jsx'
@@ -52,6 +53,7 @@ function AppShell({ children }) {
           {children}
         </main>
       </div>
+      <PrototypePanel />
     </div>
   )
 }
