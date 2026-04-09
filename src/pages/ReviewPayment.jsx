@@ -40,7 +40,7 @@ export default function ReviewPayment() {
   if (!selectedVisa) return null
 
   return (
-    <div style={{ padding: '28px 36px' }}>
+    <div style={{ padding: '28px 36px', maxWidth: 1100, margin: '0 auto' }}>
       <div style={{ fontSize: 13, color: '#8A8A8A', marginBottom: 16 }}>
         <span style={{ cursor: 'pointer' }} onClick={() => navigate('/corporate-travel')}>Corporate Travel</span>
         <span style={{ margin: '0 6px', opacity: 0.4 }}>›</span>

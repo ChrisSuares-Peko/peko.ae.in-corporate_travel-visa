@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { DatePicker } from 'antd'
+import dayjs from 'dayjs'
 import { useApp } from '../App.jsx'
 import { COUNTRIES, DESTINATION_COUNTRIES } from '../data/constants.js'
 import Footer from '../components/Footer.jsx'
@@ -194,7 +196,7 @@ function VisaCard({ isMobile }) {
     nationality: 'India',
     residence: 'India',
     destination: '',
-    travelDate: '',
+    travelDate: null,
     visaType: 'Tourist',
   })
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
@@ -206,7 +208,7 @@ function VisaCard({ isMobile }) {
     updateApp({
       searchCriteria: {
         destination: form.destination,
-        travelDate: form.travelDate,
+        travelDate: form.travelDate.format('YYYY-MM-DD'),
         visaType: form.visaType,
         nationality: form.nationality,
         countryOfResidence: form.residence,
@@ -269,13 +271,18 @@ function VisaCard({ isMobile }) {
         </div>
         <div>
           <label style={labelStyle}>Travel Date</label>
-          <input
-            type="date"
+          <DatePicker
             value={form.travelDate}
-            onChange={e => set('travelDate', e.target.value)}
-            min={new Date().toISOString().split('T')[0]}
-            style={inputBase}
-            onFocus={focusRed} onBlur={blurGrey}
+            onChange={date => set('travelDate', date)}
+            format="DD MMM YY"
+            placeholder="Select date"
+            disabledDate={d => d && d.isBefore(dayjs().startOf('day'))}
+            style={{
+              ...inputBase,
+              height: 50,
+              display: 'flex',
+              alignItems: 'center',
+            }}
           />
         </div>
       </div>

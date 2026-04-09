@@ -41,7 +41,7 @@ export default function VisaOptions() {
   const counterStyle = { width: 30, height: 30, borderRadius: 8, border: '1.5px solid #EBEBEB', background: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 16, color: '#1A1A1A' }
 
   return (
-    <div style={{ padding: '28px 32px', maxWidth: 900 }}>
+    <div style={{ padding: '28px 32px', maxWidth: 900, margin: '0 auto' }}>
       {/* Breadcrumb */}
       <div style={{ fontSize: 13, color: '#8A8A8A', marginBottom: 16 }}>
         <span style={{ cursor: 'pointer' }} onClick={() => navigate('/corporate-travel')}>Corporate Travel</span>
@@ -150,29 +150,54 @@ export default function VisaOptions() {
                         ))}
                       </div>
                     </div>
-                    <div style={{ flex: '1 1 200px' }}>
-                      <div style={{ fontWeight: 600, fontSize: 13, color: '#8A8A8A', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 10 }}>Price Breakdown</div>
-                      <div style={{ background: '#fff', border: '1px solid #EBEBEB', borderRadius: 10, padding: '14px 16px', fontSize: 13 }}>
-                        <div style={{ fontWeight: 600, marginBottom: 8 }}>Payment 1 — Platform (Now)</div>
+                    <div style={{ flex: '1 1 220px' }}>
+                      {/* Total cost header */}
+                      <div style={{ marginBottom: 14 }}>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: '#8A8A8A', textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 4 }}>Total Visa Cost (2-step payment)</div>
+                        <div style={{ fontSize: 22, fontWeight: 800, color: '#1A1A1A' }}>{fmt(calcTotal(visa))}</div>
+                        <div style={{ fontSize: 11, color: '#8A8A8A', marginTop: 3 }}>Including platform and embassy fees for {total} traveller{total !== 1 ? 's' : ''}</div>
+                      </div>
+
+                      {/* Section title */}
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1A1A1A', marginBottom: 10 }}>2-Step Payment Breakdown</div>
+
+                      {/* PAY NOW */}
+                      <div style={{ background: '#FFF5F5', border: '1px solid #F5C2C2', borderRadius: 12, padding: 14, marginBottom: 12 }}>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: '#E83838', marginBottom: 2 }}>Pay Now — Platform Payment</div>
+                        <div style={{ fontSize: 11, color: '#8A8A8A', marginBottom: 12 }}>Required to start your visa application</div>
                         {[
                           ['Service Fee', fmt(visa.serviceFee * total)],
                           ['Peko Platform Fee', fmt(visa.platformFee * total)],
                           ['GST (18%)', fmt(Math.round((visa.serviceFee + visa.platformFee) * total * 0.18))],
                         ].map(([k, v]) => (
-                          <div key={k} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: '#4A4A4A' }}>
+                          <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#4A4A4A', marginBottom: 5 }}>
                             <span>{k}</span><span>{v}</span>
                           </div>
                         ))}
-                        <div style={{ borderTop: '1px solid #EBEBEB', marginTop: 8, paddingTop: 8, fontWeight: 600, display: 'flex', justifyContent: 'space-between', color: '#E83838' }}>
-                          <span>Total (Payment 1)</span>
+                        <div style={{ borderTop: '1px solid #F5C2C2', marginTop: 10, paddingTop: 10, display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 13, color: '#E83838' }}>
+                          <span>Total Payable Now</span>
                           <span>{fmt(Math.round((visa.serviceFee + visa.platformFee) * total * 1.18))}</span>
                         </div>
                       </div>
-                      <div style={{ background: '#F7F7F7', border: '1px solid #EBEBEB', borderRadius: 10, padding: '12px 16px', fontSize: 13, marginTop: 10 }}>
-                        <div style={{ fontWeight: 600, marginBottom: 6, color: '#8A8A8A' }}>Payment 2 — Embassy (Later)</div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#8A8A8A' }}>
+
+                      {/* PAY LATER */}
+                      <div style={{ background: '#F9F9F9', border: '1px solid #EBEBEB', borderRadius: 12, padding: 14, marginBottom: 12 }}>
+                        <div style={{ fontWeight: 700, fontSize: 13, color: '#4A4A4A', marginBottom: 2 }}>Pay Later — Embassy Payment</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#4A4A4A', margin: '10px 0 8px' }}>
                           <span>Government / Embassy Fee</span><span>{fmt(visa.govFee * total)}</span>
                         </div>
+                        <div style={{ fontSize: 11, color: '#6B7280', lineHeight: 1.5 }}>You will pay this directly at the embassy or consulate during your appointment.</div>
+                      </div>
+
+                      {/* Payment flow indicator */}
+                      <div style={{ padding: '10px 12px', background: '#FFF', border: '1px dashed #EBEBEB', borderRadius: 10, fontSize: 12, color: '#6B7280', lineHeight: 1.7 }}>
+                        <strong style={{ color: '#1A1A1A' }}>Step 1:</strong> Pay platform fees → Application starts<br />
+                        <strong style={{ color: '#1A1A1A' }}>Step 2:</strong> Visit embassy → Pay government fees → Visa issued
+                      </div>
+
+                      {/* Disclaimer */}
+                      <div style={{ fontSize: 11, color: '#8A8A8A', marginTop: 10, lineHeight: 1.5 }}>
+                        Note: Embassy fees are not collected by Peko and must be paid directly at the embassy.
                       </div>
                     </div>
                   </div>

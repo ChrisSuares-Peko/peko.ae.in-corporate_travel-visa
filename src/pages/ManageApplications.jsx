@@ -7,7 +7,7 @@ export default function ManageApplications() {
   const navigate = useNavigate()
 
   return (
-    <div style={{ padding: '28px 32px', maxWidth: 1200 }}>
+    <div style={{ padding: '28px 32px', maxWidth: 1200, margin: '0 auto' }}>
       {/* Breadcrumb */}
       <div style={{ fontSize: 13, color: '#8A8A8A', marginBottom: 16 }}>
         <span style={{ cursor: 'pointer' }} onClick={() => navigate('/corporate-travel')}>Corporate Travel</span>

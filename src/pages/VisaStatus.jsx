@@ -43,7 +43,7 @@ export default function VisaStatus() {
   }
 
   return (
-    <div style={{ padding: '28px 32px', maxWidth: 1100 }}>
+    <div style={{ padding: '28px 32px', maxWidth: 1100, margin: '0 auto' }}>
       <div style={{ fontSize: 13, color: '#8A8A8A', marginBottom: 16 }}>
         <span style={{ cursor: 'pointer' }} onClick={() => navigate('/corporate-travel')}>Corporate Travel</span>
         <span style={{ margin: '0 6px', opacity: 0.4 }}>›</span>

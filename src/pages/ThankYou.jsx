@@ -15,7 +15,7 @@ export default function ThankYou() {
   const orderNumber = appData.orderNumber || 'PKO-2025-0001'
 
   return (
-    <div style={{ padding: '28px 32px', maxWidth: 700 }}>
+    <div style={{ padding: '28px 32px', maxWidth: 700, margin: '0 auto' }}>
       {/* Success card */}
       <div style={{ background: '#FFFFFF', border: '1px solid #EBEBEB', borderRadius: 20, padding: '48px 40px', textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', marginBottom: 24 }}>
         <div style={{ width: 80, height: 80, borderRadius: '50%', background: '#F0FFF4', border: '4px solid #B7EBC3', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, margin: '0 auto 24px' }}>✅</div>

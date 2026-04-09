@@ -19,7 +19,7 @@ export default function VisaApproved() {
   const travellerList = travellers?.length ? travellers : [{ firstName: 'Rajesh', lastName: 'Kumar', passport: 'P1234567' }]
 
   return (
-    <div style={{ padding: '28px 32px', maxWidth: 760 }}>
+    <div style={{ padding: '28px 32px', maxWidth: 760, margin: '0 auto' }}>
       {/* Approval card */}
       <div style={{ background: '#FFFFFF', border: '1.5px solid #B7EBC3', borderRadius: 20, padding: '40px', textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.04)', marginBottom: 24 }}>
         <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'linear-gradient(135deg,#4CAF50,#276749)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, margin: '0 auto 20px' }}>✅</div>
