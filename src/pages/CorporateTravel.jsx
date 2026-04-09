@@ -269,14 +269,16 @@ function VisaCard({ isMobile }) {
             {DESTINATION_COUNTRIES.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
-        <div>
+        <div style={{ position: 'relative' }}>
           <label style={labelStyle}>Travel Date</label>
           <DatePicker
             value={form.travelDate}
             onChange={date => set('travelDate', date)}
             format="DD MMM YY"
             placeholder="Select date"
+            placement="bottomLeft"
             disabledDate={d => d && d.isBefore(dayjs().startOf('day'))}
+            getPopupContainer={trigger => trigger.parentNode}
             style={{
               ...inputBase,
               height: 50,
@@ -410,7 +412,7 @@ export default function CorporateTravel() {
           borderRadius: 24,
           border: '1px solid #EBEBEB',
           boxShadow: '0 4px 24px rgba(0,0,0,0.07)',
-          overflow: 'hidden',
+          overflow: 'visible',
         }}>
           {/* Tab row */}
           <div style={{
