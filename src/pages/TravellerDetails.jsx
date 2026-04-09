@@ -21,7 +21,7 @@ function TravellerForm({ index, data, onChange, label }) {
           <select
             onChange={e => {
               const emp = EMPLOYEES.find(em => em.id === e.target.value)
-              if (emp) onChange({ firstName: emp.firstName, lastName: emp.lastName, dob: emp.dob, passport: emp.passport })
+              if (emp) onChange({ firstName: emp.firstName, lastName: emp.lastName, dob: emp.dob, passport: emp.passport, contactNumber: emp.contactNumber || '' })
             }}
             defaultValue=""
             style={{ border: '1px solid #EBEBEB', borderRadius: 8, padding: '7px 10px', fontSize: 13, background: '#fff', cursor: 'pointer' }}
@@ -33,15 +33,17 @@ function TravellerForm({ index, data, onChange, label }) {
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
         {[
-          { key: 'firstName', label: 'First Name', required: true },
-          { key: 'lastName', label: 'Last Name', required: true },
-          { key: 'dob', label: 'Date of Birth', required: true, type: 'date' },
-          { key: 'passport', label: 'Passport Number', required: true },
-        ].map(({ key, label: fl, required, type = 'text' }) => (
+          { key: 'firstName',     label: 'First Name',      required: true },
+          { key: 'lastName',      label: 'Last Name',        required: true },
+          { key: 'dob',           label: 'Date of Birth',    required: true, type: 'date' },
+          { key: 'passport',      label: 'Passport Number',  required: true },
+          { key: 'contactNumber', label: 'Contact Number',   required: true, type: 'tel', placeholder: '+91 98765 43210' },
+        ].map(({ key, label: fl, required, type = 'text', placeholder }) => (
           <div key={key}>
             <label style={labelStyle}>{required && <span style={{ color: '#E83838' }}>* </span>}{fl}</label>
             <input
               type={type}
+              placeholder={placeholder}
               value={data[key] || ''}
               onChange={e => onChange({ [key]: e.target.value })}
               style={inputStyle}
@@ -62,7 +64,7 @@ export default function TravellerDetails() {
   const totalTravellers = (travellersCount?.adults || 1) + (travellersCount?.children || 0) + (travellersCount?.infants || 0)
 
   const [travellers, setTravellers] = useState(() =>
-    Array.from({ length: totalTravellers }, (_, i) => ({ firstName: '', lastName: '', dob: '', passport: '' }))
+    Array.from({ length: totalTravellers }, () => ({ firstName: '', lastName: '', dob: '', passport: '', contactNumber: '' }))
   )
   const [billing, setBilling] = useState(appData.billingDetails)
   const [error, setError] = useState('')
@@ -75,8 +77,8 @@ export default function TravellerDetails() {
   }
 
   const handleProceed = () => {
-    const incomplete = travellers.some(t => !t.firstName || !t.lastName || !t.dob || !t.passport)
-    if (incomplete) return setError('Please fill in all traveller details.')
+    const incomplete = travellers.some(t => !t.firstName || !t.lastName || !t.dob || !t.passport || !t.contactNumber)
+    if (incomplete) return setError('Please fill in all traveller details, including contact number.')
     setError('')
     updateApp({ travellers, billingDetails: billing })
     navigate('/visa/documents')
