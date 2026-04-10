@@ -25,7 +25,7 @@ const PROTO_GROUPS = [
     group: 'Application Status',
     links: [
       { label: '📊 eVisa Status', path: '/visa/status' },
-      { label: '🏷 Stamp Visa Status', path: '/visa/status-stamp' },
+
       { label: '🎉 Visa Approved', path: '/visa/approved', mock: true },
     ],
   },

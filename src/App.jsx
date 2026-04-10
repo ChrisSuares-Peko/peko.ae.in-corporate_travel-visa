@@ -12,7 +12,7 @@ import DocumentUpload from './pages/DocumentUpload.jsx'
 import ReviewPayment from './pages/ReviewPayment.jsx'
 import ThankYou from './pages/ThankYou.jsx'
 import VisaStatus from './pages/VisaStatus.jsx'
-import VisaStatusStamp from './pages/VisaStatusStamp.jsx'
+
 import VisaApproved from './pages/VisaApproved.jsx'
 
 export const AppContext = createContext(null)

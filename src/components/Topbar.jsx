@@ -10,7 +10,7 @@ const PAGE_TITLES = {
   '/visa/payment': 'Review & Pay',
   '/visa/thank-you': 'Booking Confirmed',
   '/visa/status': 'Application Status',
-  '/visa/status-stamp': 'Application Status',
+
   '/visa/approved': 'Visa Approved',
 }
 
