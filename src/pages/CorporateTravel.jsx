@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App.jsx'
 import { COUNTRIES, DESTINATION_COUNTRIES } from '../data/constants.js'
 import Footer from '../components/Footer.jsx'
+import { DatePicker } from 'antd'
+import dayjs from 'dayjs'
 
 // ─── tabs config ──────────────────────────────────────────────────────────────
 
@@ -76,239 +77,6 @@ const secondaryBtn = {
   transition: 'opacity 0.15s',
 }
 
-// ─── calendar helpers ─────────────────────────────────────────────────────────
-
-const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December']
-const DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
-
-function fmtDate(d) {
-  if (!d) return null
-  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' })
-}
-
-function dateToISO(d) {
-  if (!d) return ''
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
-}
-
-// ─── custom calendar picker ───────────────────────────────────────────────────
-
-function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabledBefore }) {
-  const [open, setOpen]           = useState(false)
-  const today                     = new Date()
-  const [viewYear, setViewYear]   = useState(value ? value.getFullYear() : today.getFullYear())
-  const [viewMonth, setViewMonth] = useState(value ? value.getMonth()    : today.getMonth())
-  const wrapRef                   = useRef(null)
-  const popupRef                  = useRef(null)
-  const [popupPos, setPopupPos]   = useState({ top: 0, left: 0 })
-
-  const calcPos = () => {
-    if (!wrapRef.current) return
-    const r = wrapRef.current.getBoundingClientRect()
-    const popupWidth = 280
-    let left = r.left
-    if (left + popupWidth > window.innerWidth - 8) left = Math.max(8, r.right - popupWidth)
-    setPopupPos({ top: r.bottom + 6, left })
-  }
-
-  // close on outside click — must check both the trigger wrapper and the portal popup
-  useEffect(() => {
-    const h = e => {
-      const inTrigger = wrapRef.current && wrapRef.current.contains(e.target)
-      const inPopup   = popupRef.current && popupRef.current.contains(e.target)
-      if (!inTrigger && !inPopup) setOpen(false)
-    }
-    document.addEventListener('mousedown', h)
-    return () => document.removeEventListener('mousedown', h)
-  }, [])
-
-  // keep popup anchored on scroll / resize while open
-  useEffect(() => {
-    if (!open) return
-    window.addEventListener('scroll', calcPos, true)
-    window.addEventListener('resize', calcPos)
-    return () => {
-      window.removeEventListener('scroll', calcPos, true)
-      window.removeEventListener('resize', calcPos)
-    }
-  }, [open])
-
-  // when value changes from outside, sync view
-  useEffect(() => {
-    if (value) { setViewYear(value.getFullYear()); setViewMonth(value.getMonth()) }
-  }, [value])
-
-  const handleToggle = () => {
-    if (!open) calcPos()
-    setOpen(o => !o)
-  }
-
-  const prevMonth = () => {
-    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1) }
-    else setViewMonth(m => m - 1)
-  }
-  const nextMonth = () => {
-    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1) }
-    else setViewMonth(m => m + 1)
-  }
-
-  const firstDow    = new Date(viewYear, viewMonth, 1).getDay()
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate()
-
-  const isToday    = d => d === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear()
-  const isSelected = d => value && d === value.getDate() && viewMonth === value.getMonth() && viewYear === value.getFullYear()
-  const isDisabled = d => {
-    if (!disabledBefore) return false
-    const cell = new Date(viewYear, viewMonth, d)
-    cell.setHours(0,0,0,0)
-    const ref  = new Date(disabledBefore)
-    ref.setHours(0,0,0,0)
-    return cell < ref
-  }
-
-  const handleDay = d => {
-    if (isDisabled(d)) return
-    onChange(new Date(viewYear, viewMonth, d))
-    setOpen(false)
-  }
-
-  // build grid cells (nulls = leading blanks)
-  const cells = Array(firstDow).fill(null).concat(
-    Array.from({ length: daysInMonth }, (_, i) => i + 1)
-  )
-  // pad to complete last row
-  while (cells.length % 7 !== 0) cells.push(null)
-
-  return (
-    <div ref={wrapRef} style={{ position: 'relative', width: '100%' }}>
-
-      {/* ── TRIGGER FIELD ────────────────────────────────────────────── */}
-      <div
-        onClick={handleToggle}
-        style={{
-          ...inputBase,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: 'pointer',
-          border: open ? '1.5px solid #E83838' : '1px solid #EBEBEB',
-          userSelect: 'none',
-          gap: 8,
-        }}
-      >
-        <span style={{ color: value ? '#1A1A1A' : '#9CA3AF', fontSize: 15, flex: 1 }}>
-          {value ? fmtDate(value) : placeholder}
-        </span>
-        <span style={{
-          fontSize: 11,
-          color: open ? '#E83838' : '#8A8A8A',
-          display: 'inline-block',
-          transform: open ? 'rotate(0deg)' : 'rotate(180deg)',
-          transition: 'transform 0.2s',
-        }}>▲</span>
-      </div>
-
-      {/* ── CALENDAR DROPDOWN — rendered in document.body via portal ── */}
-      {open && createPortal(
-        <div ref={popupRef} style={{
-          position: 'fixed',
-          top: popupPos.top,
-          left: popupPos.left,
-          zIndex: 9999,
-          background: '#FFFFFF',
-          borderRadius: 14,
-          border: '1px solid #EBEBEB',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.13)',
-          width: 280,
-          fontFamily: 'inherit',
-        }}>
-
-          {/* Month / year nav */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '12px 14px',
-            borderBottom: '1px solid #F3F4F6',
-          }}>
-            <button
-              onClick={prevMonth}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#4A4A4A', lineHeight: 1, padding: '2px 6px', borderRadius: 6, fontFamily: 'inherit' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#F3F4F6'}
-              onMouseLeave={e => e.currentTarget.style.background = 'none'}
-            >‹</button>
-            <span style={{ fontWeight: 600, fontSize: 14, color: '#1A1A1A' }}>
-              {MONTH_NAMES[viewMonth]} {viewYear}
-            </span>
-            <button
-              onClick={nextMonth}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, color: '#4A4A4A', lineHeight: 1, padding: '2px 6px', borderRadius: 6, fontFamily: 'inherit' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#F3F4F6'}
-              onMouseLeave={e => e.currentTarget.style.background = 'none'}
-            >›</button>
-          </div>
-
-          {/* Day-of-week headers */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '10px 10px 4px' }}>
-            {DAY_NAMES.map((d, i) => (
-              <div key={d} style={{
-                textAlign: 'center',
-                fontSize: 11,
-                fontWeight: 700,
-                color: i === 0 ? '#E83838' : i === 6 ? '#3B82F6' : '#6B7280',
-                paddingBottom: 4,
-              }}>
-                {d}
-              </div>
-            ))}
-          </div>
-
-          {/* Day cells */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', padding: '2px 10px 12px', gap: 2 }}>
-            {cells.map((day, idx) => {
-              if (!day) return <div key={idx} />
-              const sel  = isSelected(day)
-              const tod  = isToday(day)
-              const dis  = isDisabled(day)
-              const col  = idx % 7  // 0=Sun, 6=Sat
-              const isWkend = col === 0 || col === 6
-
-              let bg    = 'transparent'
-              let color = '#1A1A1A'
-              if (sel)   { bg = '#E83838'; color = '#FFFFFF' }
-              else if (tod) { bg = '#EFF6FF'; color = '#2563EB' }
-              else if (dis) { color = '#D1D5DB' }
-              else if (isWkend) { color = col === 0 ? '#E83838' : '#3B82F6' }
-
-              return (
-                <div
-                  key={idx}
-                  onClick={() => !dis && handleDay(day)}
-                  style={{
-                    textAlign: 'center',
-                    padding: '7px 0',
-                    borderRadius: 8,
-                    fontSize: 13,
-                    fontWeight: sel ? 700 : 400,
-                    cursor: dis ? 'not-allowed' : 'pointer',
-                    background: bg,
-                    color,
-                    transition: 'background 0.12s',
-                  }}
-                  onMouseEnter={e => { if (!sel && !dis) e.currentTarget.style.background = '#F3F4F6' }}
-                  onMouseLeave={e => { if (!sel && !dis) e.currentTarget.style.background = tod ? '#EFF6FF' : 'transparent' }}
-                >
-                  {day}
-                </div>
-              )
-            })}
-          </div>
-        </div>,
-        document.body
-      )}
-    </div>
-  )
-}
 
 // ─── hotel card ───────────────────────────────────────────────────────────────
 
@@ -376,7 +144,7 @@ function VisaCard({ isMobile }) {
     nationality: 'India',
     residence:   'India',
     destination: '',
-    travelDate:  null,   // JS Date | null
+    travelDate:  null,   // dayjs | null
     visaType:    'Tourist',
   })
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
@@ -388,7 +156,7 @@ function VisaCard({ isMobile }) {
     updateApp({
       searchCriteria: {
         destination:        form.destination,
-        travelDate:         dateToISO(form.travelDate),
+        travelDate:         form.travelDate.format('YYYY-MM-DD'),
         visaType:           form.visaType,
         nationality:        form.nationality,
         countryOfResidence: form.residence,
@@ -424,13 +192,17 @@ function VisaCard({ isMobile }) {
             {DESTINATION_COUNTRIES.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
-        <div>
+        <div style={{ position: 'relative' }}>
           <label style={labelStyle}>Travel Date</label>
-          <CalendarPicker
+          <DatePicker
             value={form.travelDate}
             onChange={d => set('travelDate', d)}
-            placeholder="Select Date"
-            disabledBefore={new Date()}
+            placeholder="Select date"
+            format="DD MMM YYYY"
+            placement="bottomLeft"
+            disabledDate={d => d && d.isBefore(dayjs().startOf('day'))}
+            getPopupContainer={trigger => trigger.parentNode}
+            style={{ width: '100%', height: 44, borderRadius: 10 }}
           />
         </div>
       </div>
