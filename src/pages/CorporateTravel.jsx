@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App.jsx'
 import { COUNTRIES, DESTINATION_COUNTRIES } from '../data/constants.js'
 import Footer from '../components/Footer.jsx'
-import { DatePicker } from 'antd'
 
 // ─── tabs config ──────────────────────────────────────────────────────────────
 
@@ -143,19 +142,17 @@ function VisaCard({ isMobile }) {
     nationality: 'India',
     residence:   'India',
     destination: '',
-    travelDate:  null,   // dayjs | null
     visaType:    'Tourist',
   })
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
-  const canSearch = form.destination && form.travelDate
+  const canSearch = !!form.destination
 
   const handleSearch = () => {
     if (!canSearch) return
     updateApp({
       searchCriteria: {
         destination:        form.destination,
-        travelDate:         form.travelDate.format('YYYY-MM-DD'),
         visaType:           form.visaType,
         nationality:        form.nationality,
         countryOfResidence: form.residence,
@@ -173,7 +170,7 @@ function VisaCard({ isMobile }) {
       </div>
 
       {/* Row 1 */}
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
         <div>
           <label style={labelStyle}>Nationality</label>
           <input placeholder="India" value={form.nationality} onChange={e => set('nationality', e.target.value)} style={inputBase} onFocus={focusRed} onBlur={blurGrey} />
@@ -190,18 +187,6 @@ function VisaCard({ isMobile }) {
             <option value="">Select destination</option>
             {DESTINATION_COUNTRIES.map(c => <option key={c}>{c}</option>)}
           </select>
-        </div>
-        <div>
-          <label style={labelStyle}>Travel Date</label>
-          <DatePicker
-            value={form.travelDate}
-            onChange={d => set('travelDate', d)}
-            placeholder="Select date"
-            format="DD MMM YYYY"
-            placement="bottomLeft"
-            disabledDate={d => d && d.isBefore(new Date(), 'day')}
-            style={{ width: '100%', height: 44, borderRadius: 10 }}
-          />
         </div>
       </div>
 
