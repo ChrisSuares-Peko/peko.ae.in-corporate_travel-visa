@@ -1,4 +1,3 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App.jsx'
 import Footer from '../components/Footer.jsx'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 const STATUS_MAP = {
   'Approved': { bg: '#F0FFF4', color: '#276749' },
   'Active': { bg: '#F0FFF4', color: '#276749' },

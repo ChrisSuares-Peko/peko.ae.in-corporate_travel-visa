@@ -1,4 +1,3 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import ApplicationsTable from '../components/ApplicationsTable.jsx'
 import Footer from '../components/Footer.jsx'

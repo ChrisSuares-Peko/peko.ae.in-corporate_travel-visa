@@ -1,4 +1,4 @@
-import React from 'react'
+import { Fragment } from 'react'
 
 const STEPS = ['Select Visa', 'Traveller Details', 'Documents', 'Review & Pay', 'Tracking']
 
@@ -10,7 +10,7 @@ export default function Stepper({ currentStep }) {
         const done = step < currentStep
         const active = step === currentStep
         return (
-          <React.Fragment key={step}>
+          <Fragment key={step}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, minWidth: 70 }}>
               <div style={{
                 width: 32, height: 32, borderRadius: '50%',
@@ -27,7 +27,7 @@ export default function Stepper({ currentStep }) {
             {i < STEPS.length - 1 && (
               <div style={{ height: 2, flex: 1, background: done ? '#E83838' : '#EBEBEB', marginTop: 15, minWidth: 20 }} />
             )}
-          </React.Fragment>
+          </Fragment>
         )
       })}
     </div>

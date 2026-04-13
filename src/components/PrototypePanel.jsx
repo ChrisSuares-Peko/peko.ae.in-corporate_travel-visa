@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useApp } from '../App.jsx'
 import { VISA_OPTIONS, EMPLOYEES } from '../data/constants.js'
@@ -41,7 +41,6 @@ export default function PrototypePanel() {
     updateApp({
       searchCriteria: {
         destination: 'United States',
-        travelDate: '2025-06-15',
         visaType: 'Tourist',
         nationality: 'India',
         countryOfResidence: 'India',

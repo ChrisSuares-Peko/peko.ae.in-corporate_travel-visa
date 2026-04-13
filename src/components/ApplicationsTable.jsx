@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MOCK_APPLICATIONS } from '../data/constants.js'
 import StatusBadge from './StatusBadge.jsx'

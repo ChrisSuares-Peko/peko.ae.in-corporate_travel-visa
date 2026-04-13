@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App.jsx'
 import { VISA_OPTIONS } from '../data/constants.js'
@@ -55,7 +55,6 @@ export default function VisaOptions() {
       {searchCriteria && (
         <div style={{ background: '#F7F7F7', border: '1px solid #EBEBEB', borderRadius: 12, padding: '14px 20px', marginBottom: 24, display: 'flex', gap: 24, flexWrap: 'wrap', fontSize: 14 }}>
           <span>📍 <strong>{searchCriteria.destination}</strong></span>
-          <span>🗓 <strong>{searchCriteria.travelDate}</strong></span>
           <span>🧳 <strong>{searchCriteria.visaType}</strong></span>
           <span>🌍 <strong>From {searchCriteria.countryOfResidence}</strong></span>
         </div>
