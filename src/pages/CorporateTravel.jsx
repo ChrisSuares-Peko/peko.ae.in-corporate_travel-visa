@@ -98,6 +98,16 @@ function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabled
   const [viewYear, setViewYear]   = useState(value ? value.getFullYear() : today.getFullYear())
   const [viewMonth, setViewMonth] = useState(value ? value.getMonth()    : today.getMonth())
   const wrapRef                   = useRef(null)
+  const [popupPos, setPopupPos]   = useState({ top: 0, left: 0 })
+
+  const calcPos = () => {
+    if (!wrapRef.current) return
+    const r = wrapRef.current.getBoundingClientRect()
+    const popupWidth = 280
+    let left = r.left
+    if (left + popupWidth > window.innerWidth - 8) left = window.innerWidth - popupWidth - 8
+    setPopupPos({ top: r.bottom + 6, left })
+  }
 
   // close on outside click
   useEffect(() => {
@@ -106,10 +116,26 @@ function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabled
     return () => document.removeEventListener('mousedown', h)
   }, [])
 
+  // keep popup anchored on scroll / resize while open
+  useEffect(() => {
+    if (!open) return
+    window.addEventListener('scroll', calcPos, true)
+    window.addEventListener('resize', calcPos)
+    return () => {
+      window.removeEventListener('scroll', calcPos, true)
+      window.removeEventListener('resize', calcPos)
+    }
+  }, [open])
+
   // when value changes from outside, sync view
   useEffect(() => {
     if (value) { setViewYear(value.getFullYear()); setViewMonth(value.getMonth()) }
   }, [value])
+
+  const handleToggle = () => {
+    if (!open) calcPos()
+    setOpen(o => !o)
+  }
 
   const prevMonth = () => {
     if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1) }
@@ -152,7 +178,7 @@ function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabled
 
       {/* ── TRIGGER FIELD ────────────────────────────────────────────── */}
       <div
-        onClick={() => setOpen(o => !o)}
+        onClick={handleToggle}
         style={{
           ...inputBase,
           display: 'flex',
@@ -179,9 +205,9 @@ function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabled
       {/* ── CALENDAR DROPDOWN ─────────────────────────────────────────── */}
       {open && (
         <div style={{
-          position: 'absolute',
-          top: 'calc(100% + 6px)',
-          left: 0,
+          position: 'fixed',
+          top: popupPos.top,
+          left: popupPos.left,
           zIndex: 9999,
           background: '#FFFFFF',
           borderRadius: 14,
