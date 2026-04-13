@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../App.jsx'
 import { COUNTRIES, DESTINATION_COUNTRIES } from '../data/constants.js'
@@ -98,6 +99,7 @@ function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabled
   const [viewYear, setViewYear]   = useState(value ? value.getFullYear() : today.getFullYear())
   const [viewMonth, setViewMonth] = useState(value ? value.getMonth()    : today.getMonth())
   const wrapRef                   = useRef(null)
+  const popupRef                  = useRef(null)
   const [popupPos, setPopupPos]   = useState({ top: 0, left: 0 })
 
   const calcPos = () => {
@@ -105,13 +107,17 @@ function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabled
     const r = wrapRef.current.getBoundingClientRect()
     const popupWidth = 280
     let left = r.left
-    if (left + popupWidth > window.innerWidth - 8) left = window.innerWidth - popupWidth - 8
+    if (left + popupWidth > window.innerWidth - 8) left = Math.max(8, r.right - popupWidth)
     setPopupPos({ top: r.bottom + 6, left })
   }
 
-  // close on outside click
+  // close on outside click — must check both the trigger wrapper and the portal popup
   useEffect(() => {
-    const h = e => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false) }
+    const h = e => {
+      const inTrigger = wrapRef.current && wrapRef.current.contains(e.target)
+      const inPopup   = popupRef.current && popupRef.current.contains(e.target)
+      if (!inTrigger && !inPopup) setOpen(false)
+    }
     document.addEventListener('mousedown', h)
     return () => document.removeEventListener('mousedown', h)
   }, [])
@@ -202,9 +208,9 @@ function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabled
         }}>▲</span>
       </div>
 
-      {/* ── CALENDAR DROPDOWN ─────────────────────────────────────────── */}
-      {open && (
-        <div style={{
+      {/* ── CALENDAR DROPDOWN — rendered in document.body via portal ── */}
+      {open && createPortal(
+        <div ref={popupRef} style={{
           position: 'fixed',
           top: popupPos.top,
           left: popupPos.left,
@@ -297,7 +303,8 @@ function CalendarPicker({ value, onChange, placeholder = 'Select Date', disabled
               )
             })}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
