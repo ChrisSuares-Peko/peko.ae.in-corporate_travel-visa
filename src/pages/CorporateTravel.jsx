@@ -4,7 +4,6 @@ import { useApp } from '../App.jsx'
 import { COUNTRIES, DESTINATION_COUNTRIES } from '../data/constants.js'
 import Footer from '../components/Footer.jsx'
 import { DatePicker } from 'antd'
-import dayjs from 'dayjs'
 
 // ─── tabs config ──────────────────────────────────────────────────────────────
 
@@ -192,7 +191,7 @@ function VisaCard({ isMobile }) {
             {DESTINATION_COUNTRIES.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
-        <div style={{ position: 'relative' }}>
+        <div>
           <label style={labelStyle}>Travel Date</label>
           <DatePicker
             value={form.travelDate}
@@ -200,8 +199,7 @@ function VisaCard({ isMobile }) {
             placeholder="Select date"
             format="DD MMM YYYY"
             placement="bottomLeft"
-            disabledDate={d => d && d.isBefore(dayjs().startOf('day'))}
-            getPopupContainer={trigger => trigger.parentNode}
+            disabledDate={d => d && d.isBefore(new Date(), 'day')}
             style={{ width: '100%', height: 44, borderRadius: 10 }}
           />
         </div>
