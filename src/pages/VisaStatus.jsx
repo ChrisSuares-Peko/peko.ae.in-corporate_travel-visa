@@ -21,7 +21,7 @@ const TIMELINE_CONFIG = {
     { label: 'Document Pickup Scheduled',date: '02 Feb 2025', state: 'active',   pickup: true },
     { label: 'Embassy Submission',       date: 'Pending',     state: 'upcoming' },
     { label: 'Visa Issued / Closed',     date: 'Pending',     state: 'upcoming' },
-    { label: 'Documents Returned',       date: 'Pending',     state: 'upcoming' },
+    { label: 'Documents Returned',       date: '08 Feb 2025', state: 'upcoming', returnDetails: true },
   ],
   visa2: [
     { label: 'Application Created',      date: '25 Jan 2025', state: 'completed' },
@@ -95,6 +95,50 @@ function PickupCard() {
       <div style={{ fontSize: 12, fontWeight: 600, color: '#92400E', marginBottom: 6 }}>Required Documents for Pickup:</div>
       {['Original Passport', 'Bank Statement', 'Photograph (recent)', 'Visa Application Form'].map(d => (
         <div key={d} style={{ fontSize: 12, color: '#92400E', marginBottom: 3 }}>✓ {d}</div>
+      ))}
+    </div>
+  )
+}
+
+// ─── return card ──────────────────────────────────────────────────────────────
+
+const RETURN_DETAILS = {
+  date:         '08 Feb 2025',
+  time:         '2:00 PM – 4:00 PM',
+  contactName:  'Peko Operations Team',
+  contactPhone: '+971 50 123 4567',
+  status:       'Scheduled',
+  address:      '456 Marina Business Tower, Dubai, UAE',
+  documents:    ['Original Passport', 'Bank Statement', 'Visa Application Form', 'Supporting Documents'],
+}
+
+function ReturnCard() {
+  const r = RETURN_DETAILS
+  return (
+    <div style={{ marginTop: 12, padding: 14, background: '#F7FBF7', border: '1px solid #CFE8CF', borderRadius: 10 }}>
+      <div style={{ fontWeight: 600, fontSize: 13, color: '#276749', marginBottom: 10 }}>
+        📬 Your documents are scheduled to be returned on <strong>{r.date}</strong>
+      </div>
+
+      <div style={{ marginBottom: 12 }}>
+        <label style={{ fontSize: 11, fontWeight: 600, color: '#8A8A8A', display: 'block', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.4 }}>Return Address</label>
+        <div style={{ padding: '9px 12px', background: '#FFFFFF', border: '1px solid #DCEAD9', borderRadius: 8, fontSize: 13, color: '#1A1A1A' }}>
+          {r.address}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12, color: '#276749', marginBottom: 12, alignItems: 'center' }}>
+        <span>📅 Date: <strong>{r.date}</strong></span>
+        <span>🕐 Time: <strong>{r.time}</strong></span>
+        <span>👤 Contact: <strong>{r.contactName}</strong></span>
+        <span style={{ display: 'inline-block', fontSize: 11, fontWeight: 600, padding: '2px 9px', borderRadius: 20, background: '#D1FAE5', color: '#065F46' }}>
+          {r.status}
+        </span>
+      </div>
+
+      <div style={{ fontSize: 12, fontWeight: 600, color: '#276749', marginBottom: 6 }}>Documents Being Returned:</div>
+      {r.documents.map(d => (
+        <div key={d} style={{ fontSize: 12, color: '#276749', marginBottom: 3 }}>✓ {d}</div>
       ))}
     </div>
   )
@@ -287,9 +331,10 @@ export default function VisaStatus() {
                     <div style={{ fontSize: 12, color: '#8A8A8A', marginTop: 2 }}>{step.date}</div>
 
                     {/* Special step cards */}
-                    {step.pickup      && <PickupCard />}
-                    {step.appointment && <AppointmentCard />}
-                    {step.external    && <EmbassyHandoverCard />}
+                    {step.pickup         && <PickupCard />}
+                    {step.returnDetails  && <ReturnCard />}
+                    {step.appointment    && <AppointmentCard />}
+                    {step.external       && <EmbassyHandoverCard />}
                   </div>
                 </div>
               )
