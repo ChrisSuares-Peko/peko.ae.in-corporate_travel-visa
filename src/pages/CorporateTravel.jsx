@@ -166,6 +166,80 @@ function VisaCard({ isMobile }) {
 
   return (
     <div style={{ padding: isMobile ? '20px 16px 24px' : '24px 32px 32px' }}>
+      <style>{`
+        .visa-travel-date-popup .ant-picker-panel-container {
+          border-radius: 14px;
+          overflow: hidden;
+          box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+          border: 1px solid #F0F0F0;
+        }
+        .visa-travel-date-popup .ant-picker-panel {
+          border-radius: 14px;
+          border: none;
+        }
+        .visa-travel-date-popup .ant-picker-header {
+          padding: 12px 16px;
+          border-bottom: 1px solid #F5F5F5;
+          background: #FFFFFF;
+        }
+        .visa-travel-date-popup .ant-picker-header-view button {
+          font-weight: 600;
+          font-size: 14px;
+          color: #1A1A1A;
+        }
+        .visa-travel-date-popup .ant-picker-header button {
+          color: #BBBBBB;
+          transition: color 0.15s;
+        }
+        .visa-travel-date-popup .ant-picker-header button:hover {
+          color: #1A1A1A;
+        }
+        .visa-travel-date-popup .ant-picker-body {
+          padding: 8px 12px 12px;
+        }
+        .visa-travel-date-popup .ant-picker-content th {
+          color: #BBBBBB;
+          font-size: 11px;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+          padding-bottom: 6px;
+        }
+        .visa-travel-date-popup .ant-picker-cell {
+          padding: 3px 0;
+        }
+        .visa-travel-date-popup .ant-picker-cell-inner {
+          border-radius: 8px;
+          height: 30px;
+          line-height: 30px;
+          font-size: 13px;
+          min-width: 30px;
+          transition: background 0.15s;
+        }
+        .visa-travel-date-popup .ant-picker-cell:not(.ant-picker-cell-disabled):hover .ant-picker-cell-inner {
+          background: #F5F5F5 !important;
+        }
+        .visa-travel-date-popup .ant-picker-cell-selected .ant-picker-cell-inner,
+        .visa-travel-date-popup .ant-picker-cell-selected:hover .ant-picker-cell-inner {
+          background: #EAF3FF !important;
+          color: #1677FF !important;
+          font-weight: 600;
+        }
+        .visa-travel-date-popup .ant-picker-cell-today .ant-picker-cell-inner::before {
+          border: 1.5px solid #E83838 !important;
+          border-radius: 8px;
+        }
+        .visa-travel-date-popup .ant-picker-footer {
+          border-top: 1px solid #F5F5F5;
+        }
+        .visa-travel-date-popup .ant-picker-today-btn {
+          color: #E83838;
+          font-size: 13px;
+        }
+        .visa-travel-date-popup .ant-picker-today-btn:hover {
+          color: #C62828;
+        }
+      `}</style>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
         <button onClick={() => navigate('/manage-applications')} style={secondaryBtn}>
           Manage Applications
@@ -191,21 +265,25 @@ function VisaCard({ isMobile }) {
             {DESTINATION_COUNTRIES.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative', overflow: 'visible' }}>
           <label style={labelStyle}>Travel Date</label>
           <DatePicker
             value={travelDate}
             onChange={(date) => setTravelDate(date)}
-            placeholder="Select date"
+            placeholder="Select Date"
             format="DD MMM YYYY"
             placement="bottomLeft"
             getPopupContainer={(trigger) => trigger.parentNode}
-            suffixIcon={<CalendarOutlined style={{ color: '#8A8A8A', fontSize: 14 }} />}
+            dropdownClassName="visa-travel-date-popup"
+            suffixIcon={<CalendarOutlined style={{ color: '#BBBBBB', fontSize: 13 }} />}
             style={{
               width: '100%',
               height: 44,
-              borderRadius: 10,
+              borderRadius: 12,
               border: '1px solid #EBEBEB',
+              borderTop: '2px solid #E83838',
+              background: '#FFFFFF',
+              boxShadow: 'none',
             }}
           />
         </div>
