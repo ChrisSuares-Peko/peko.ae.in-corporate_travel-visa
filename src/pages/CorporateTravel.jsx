@@ -148,6 +148,7 @@ function VisaCard({ isMobile }) {
   })
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
   const [travelDate, setTravelDate] = useState(null)
+  const [isDateOpen, setIsDateOpen] = useState(false)
 
   const canSearch = !!form.destination
 
@@ -167,6 +168,15 @@ function VisaCard({ isMobile }) {
   return (
     <div style={{ padding: isMobile ? '20px 16px 24px' : '24px 32px 32px' }}>
       <style>{`
+        .visa-travel-date-popup,
+        .visa-travel-date-popup .ant-picker-panel-container,
+        .visa-travel-date-popup .ant-picker-panel,
+        .visa-travel-date-popup .ant-picker-date-panel,
+        .visa-travel-date-popup .ant-picker-body,
+        .visa-travel-date-popup .ant-picker-content {
+          background: #FFFFFF !important;
+          opacity: 1 !important;
+        }
         .visa-travel-date-popup .ant-picker-panel-container {
           border-radius: 14px;
           overflow: hidden;
@@ -269,7 +279,9 @@ function VisaCard({ isMobile }) {
           <label style={labelStyle}>Travel Date</label>
           <DatePicker
             value={travelDate}
-            onChange={(date) => setTravelDate(date)}
+            open={isDateOpen}
+            onOpenChange={(open) => setIsDateOpen(open)}
+            onChange={(date) => { setTravelDate(date); setIsDateOpen(false) }}
             placeholder="Select Date"
             format="DD MMM YYYY"
             placement="bottomLeft"
