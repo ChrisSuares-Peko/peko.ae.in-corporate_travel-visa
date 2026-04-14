@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import dayjs from 'dayjs'
 import { useApp } from '../App.jsx'
 import { EMPLOYEES } from '../data/constants.js'
+import AppDatePicker from '../components/AppDatePicker.jsx'
 import Stepper from '../components/Stepper.jsx'
 import Footer from '../components/Footer.jsx'
 
@@ -39,17 +41,25 @@ function TravellerForm({ index, data, onChange, label }) {
           { key: 'passport',      label: 'Passport Number',  required: true },
           { key: 'contactNumber', label: 'Contact Number',   required: true, type: 'tel', placeholder: '+91 98765 43210' },
         ].map(({ key, label: fl, required, type = 'text', placeholder }) => (
-          <div key={key}>
+          <div key={key} style={type === 'date' ? { position: 'relative' } : undefined}>
             <label style={labelStyle}>{required && <span style={{ color: '#E83838' }}>* </span>}{fl}</label>
-            <input
-              type={type}
-              placeholder={placeholder}
-              value={data[key] || ''}
-              onChange={e => onChange({ [key]: e.target.value })}
-              style={inputStyle}
-              onFocus={e => e.target.style.borderColor = '#E83838'}
-              onBlur={e => e.target.style.borderColor = '#EBEBEB'}
-            />
+            {type === 'date' ? (
+              <AppDatePicker
+                value={data[key] ? dayjs(data[key]) : null}
+                onChange={(date) => onChange({ [key]: date ? date.format('YYYY-MM-DD') : '' })}
+                placeholder="DD MMM YYYY"
+              />
+            ) : (
+              <input
+                type={type}
+                placeholder={placeholder}
+                value={data[key] || ''}
+                onChange={e => onChange({ [key]: e.target.value })}
+                style={inputStyle}
+                onFocus={e => e.target.style.borderColor = '#E83838'}
+                onBlur={e => e.target.style.borderColor = '#EBEBEB'}
+              />
+            )}
           </div>
         ))}
       </div>

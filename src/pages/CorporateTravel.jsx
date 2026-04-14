@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { DatePicker } from 'antd'
-import { CalendarOutlined } from '@ant-design/icons'
+import dayjs from 'dayjs'
 import { useApp } from '../App.jsx'
 import { COUNTRIES, DESTINATION_COUNTRIES } from '../data/constants.js'
+import AppDatePicker from '../components/AppDatePicker.jsx'
 import Footer from '../components/Footer.jsx'
 
 // ─── tabs config ──────────────────────────────────────────────────────────────
@@ -83,8 +83,8 @@ const secondaryBtn = {
 function HotelCard({ isMobile }) {
   const [form, setForm] = useState({
     location: '',
-    checkIn:  '',
-    checkOut: '',
+    checkIn:  null,
+    checkOut: null,
     guests:   '',
     nationality: '',
     residence:   '',
@@ -103,13 +103,23 @@ function HotelCard({ isMobile }) {
           <label style={labelStyle}>Location</label>
           <input placeholder="Dubai, United Arab Emirates" value={form.location} onChange={e => set('location', e.target.value)} style={inputBase} onFocus={focusRed} onBlur={blurGrey} />
         </div>
-        <div>
+        <div style={{ position: 'relative' }}>
           <label style={labelStyle}>Check In</label>
-          <input type="date" value={form.checkIn} onChange={e => set('checkIn', e.target.value)} min={new Date().toISOString().split('T')[0]} style={inputBase} onFocus={focusRed} onBlur={blurGrey} />
+          <AppDatePicker
+            value={form.checkIn}
+            onChange={(date) => set('checkIn', date)}
+            placeholder="Check-in date"
+            disabledDate={(current) => current && current < dayjs().startOf('day')}
+          />
         </div>
-        <div>
+        <div style={{ position: 'relative' }}>
           <label style={labelStyle}>Check Out</label>
-          <input type="date" value={form.checkOut} onChange={e => set('checkOut', e.target.value)} min={form.checkIn || new Date().toISOString().split('T')[0]} style={inputBase} onFocus={focusRed} onBlur={blurGrey} />
+          <AppDatePicker
+            value={form.checkOut}
+            onChange={(date) => set('checkOut', date)}
+            placeholder="Check-out date"
+            disabledDate={(current) => current && current < (form.checkIn || dayjs()).startOf('day')}
+          />
         </div>
         <div>
           <label style={labelStyle}>Guests</label>
@@ -148,7 +158,6 @@ function VisaCard({ isMobile }) {
   })
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
   const [travelDate, setTravelDate] = useState(null)
-  const [isDateOpen, setIsDateOpen] = useState(false)
 
   const canSearch = !!form.destination
 
@@ -167,89 +176,6 @@ function VisaCard({ isMobile }) {
 
   return (
     <div style={{ padding: isMobile ? '20px 16px 24px' : '24px 32px 32px' }}>
-      <style>{`
-        .visa-travel-date-popup,
-        .visa-travel-date-popup .ant-picker-panel-container,
-        .visa-travel-date-popup .ant-picker-panel,
-        .visa-travel-date-popup .ant-picker-date-panel,
-        .visa-travel-date-popup .ant-picker-body,
-        .visa-travel-date-popup .ant-picker-content {
-          background: #FFFFFF !important;
-          opacity: 1 !important;
-        }
-        .visa-travel-date-popup .ant-picker-panel-container {
-          border-radius: 14px;
-          overflow: hidden;
-          box-shadow: 0 12px 28px rgba(0,0,0,0.12);
-          border: 1px solid #F0F0F0;
-        }
-        .visa-travel-date-popup .ant-picker-panel {
-          border-radius: 14px;
-          border: none;
-        }
-        .visa-travel-date-popup .ant-picker-header {
-          padding: 12px 16px;
-          border-bottom: 1px solid #F5F5F5;
-          background: #FFFFFF;
-        }
-        .visa-travel-date-popup .ant-picker-header-view button {
-          font-weight: 600;
-          font-size: 14px;
-          color: #1A1A1A;
-        }
-        .visa-travel-date-popup .ant-picker-header button {
-          color: #BBBBBB;
-          transition: color 0.15s;
-        }
-        .visa-travel-date-popup .ant-picker-header button:hover {
-          color: #1A1A1A;
-        }
-        .visa-travel-date-popup .ant-picker-body {
-          padding: 8px 12px 12px;
-        }
-        .visa-travel-date-popup .ant-picker-content th {
-          color: #BBBBBB;
-          font-size: 11px;
-          font-weight: 500;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          padding-bottom: 6px;
-        }
-        .visa-travel-date-popup .ant-picker-cell {
-          padding: 3px 0;
-        }
-        .visa-travel-date-popup .ant-picker-cell-inner {
-          border-radius: 8px;
-          height: 30px;
-          line-height: 30px;
-          font-size: 13px;
-          min-width: 30px;
-          transition: background 0.15s;
-        }
-        .visa-travel-date-popup .ant-picker-cell:not(.ant-picker-cell-disabled):hover .ant-picker-cell-inner {
-          background: #F5F5F5 !important;
-        }
-        .visa-travel-date-popup .ant-picker-cell-selected .ant-picker-cell-inner,
-        .visa-travel-date-popup .ant-picker-cell-selected:hover .ant-picker-cell-inner {
-          background: #EAF3FF !important;
-          color: #1677FF !important;
-          font-weight: 600;
-        }
-        .visa-travel-date-popup .ant-picker-cell-today .ant-picker-cell-inner::before {
-          border: 1.5px solid #E83838 !important;
-          border-radius: 8px;
-        }
-        .visa-travel-date-popup .ant-picker-footer {
-          border-top: 1px solid #F5F5F5;
-        }
-        .visa-travel-date-popup .ant-picker-today-btn {
-          color: #E83838;
-          font-size: 13px;
-        }
-        .visa-travel-date-popup .ant-picker-today-btn:hover {
-          color: #C62828;
-        }
-      `}</style>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
         <button onClick={() => navigate('/manage-applications')} style={secondaryBtn}>
           Manage Applications
@@ -275,28 +201,12 @@ function VisaCard({ isMobile }) {
             {DESTINATION_COUNTRIES.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
-        <div style={{ position: 'relative', overflow: 'visible' }}>
+        <div style={{ position: 'relative' }}>
           <label style={labelStyle}>Travel Date</label>
-          <DatePicker
+          <AppDatePicker
             value={travelDate}
-            open={isDateOpen}
-            onOpenChange={(open) => setIsDateOpen(open)}
-            onChange={(date) => { setTravelDate(date); setIsDateOpen(false) }}
+            onChange={(date) => setTravelDate(date)}
             placeholder="Select Date"
-            format="DD MMM YYYY"
-            placement="bottomLeft"
-            getPopupContainer={(trigger) => trigger.parentNode}
-            dropdownClassName="visa-travel-date-popup"
-            suffixIcon={<CalendarOutlined style={{ color: '#BBBBBB', fontSize: 13 }} />}
-            style={{
-              width: '100%',
-              height: 44,
-              borderRadius: 12,
-              border: '1px solid #EBEBEB',
-              borderTop: '2px solid #E83838',
-              background: '#FFFFFF',
-              boxShadow: 'none',
-            }}
           />
         </div>
       </div>
