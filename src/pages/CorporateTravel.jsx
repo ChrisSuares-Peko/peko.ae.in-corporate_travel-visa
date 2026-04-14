@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { DatePicker } from 'antd'
+import { CalendarOutlined } from '@ant-design/icons'
 import { useApp } from '../App.jsx'
 import { COUNTRIES, DESTINATION_COUNTRIES } from '../data/constants.js'
 import Footer from '../components/Footer.jsx'
@@ -145,6 +147,7 @@ function VisaCard({ isMobile }) {
     visaType:    'Tourist',
   })
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
+  const [travelDate, setTravelDate] = useState(null)
 
   const canSearch = !!form.destination
 
@@ -170,7 +173,7 @@ function VisaCard({ isMobile }) {
       </div>
 
       {/* Row 1 */}
-      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr 1fr 1fr', gap: 16, marginBottom: 20 }}>
         <div>
           <label style={labelStyle}>Nationality</label>
           <input placeholder="India" value={form.nationality} onChange={e => set('nationality', e.target.value)} style={inputBase} onFocus={focusRed} onBlur={blurGrey} />
@@ -187,6 +190,24 @@ function VisaCard({ isMobile }) {
             <option value="">Select destination</option>
             {DESTINATION_COUNTRIES.map(c => <option key={c}>{c}</option>)}
           </select>
+        </div>
+        <div style={{ position: 'relative' }}>
+          <label style={labelStyle}>Travel Date</label>
+          <DatePicker
+            value={travelDate}
+            onChange={(date) => setTravelDate(date)}
+            placeholder="Select date"
+            format="DD MMM YYYY"
+            placement="bottomLeft"
+            getPopupContainer={(trigger) => trigger.parentNode}
+            suffixIcon={<CalendarOutlined style={{ color: '#8A8A8A', fontSize: 14 }} />}
+            style={{
+              width: '100%',
+              height: 44,
+              borderRadius: 10,
+              border: '1px solid #EBEBEB',
+            }}
+          />
         </div>
       </div>
 
