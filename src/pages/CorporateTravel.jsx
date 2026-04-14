@@ -253,7 +253,7 @@ export default function CorporateTravel() {
         alignItems: 'center',
       }}>
         <h1 style={{ fontSize: isMobile ? 20 : isTablet ? 24 : 30, fontWeight: 700, color: '#1A1A1A', textAlign: 'center', marginBottom: 28, lineHeight: 1.3, letterSpacing: -0.3 }}>
-          The modern way to manage corporate travel — all in one place
+          The modern way to manage corporate travel — TEST VERSION
         </h1>
 
         <div style={{ width: '100%', background: '#FFFFFF', borderRadius: 24, border: '1px solid #EBEBEB', boxShadow: '0 4px 24px rgba(0,0,0,0.07)' }}>
